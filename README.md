@@ -226,6 +226,14 @@ curl -X POST "http://localhost:5092/v1/audio/transcriptions" \
   - `AGGRESSIVE_MEMORY_CLEANUP`：激进显存清理（默认 `true`）
   - `ENABLE_TENSOR_CORE`、`ENABLE_CUDNN_BENCHMARK`、`TENSOR_CORE_PRECISION`：Tensor Core/Benchmark 相关
 
+- 闲置资源优化
+  - `IDLE_MEMORY_CLEANUP_INTERVAL`：闲置时内存清理间隔（秒，默认 `300`）
+  - `IDLE_DEEP_CLEANUP_THRESHOLD`：深度清理阈值（秒，默认 `1800`）
+  - `ENABLE_IDLE_CPU_OPTIMIZATION`：启用闲置时CPU优化（默认 `true`）
+  - `IDLE_MONITORING_INTERVAL`：闲置监控间隔（秒，默认 `60`）
+
+> 💡 **资源优化建议**：启用闲置优化后，系统会在模型闲置时自动释放资源。可通过 `/health` 端点监控 `idle_status` 和资源使用情况。推荐在资源受限环境中设置较短的清理间隔。
+
 - 切片与句子完整性
   - `ENABLE_OVERLAP_CHUNKING`：重叠切片（默认 `true`），`CHUNK_OVERLAP_SECONDS`：重叠秒数（默认 `30`）
   - `ENABLE_SILENCE_ALIGNED_CHUNKING`：静音对齐分割（默认 `true`）
@@ -277,6 +285,9 @@ curl -X POST "http://localhost:5092/v1/audio/transcriptions" \
 
 - 问：显存不足/频繁 OOM？
   - 答：将 `CHUNK_MINITE` 调小（如 6~8）；将 `DECODING_STRATEGY=greedy`；`PRESET=quality` 会自动调低并发与显存占比；必要时关闭 `ENABLE_OVERLAP_CHUNKING`。
+
+- 问：想要进一步优化闲置时的资源占用？
+  - 答：可调节 `IDLE_MEMORY_CLEANUP_INTERVAL=180`（3分钟清理一次）；设置 `IDLE_DEEP_CLEANUP_THRESHOLD=900`（15分钟深度清理）；启用 `ENABLE_IDLE_CPU_OPTIMIZATION=true` 降低CPU优先级。
 
 - 问：返回的字幕太碎或闪烁？
   - 答：可调 `MIN_SUBTITLE_DURATION_SECONDS`、`SHORT_SUBTITLE_MERGE_MAX_GAP_SECONDS`、`SHORT_SUBTITLE_MIN_CHARS`；或关闭 `MERGE_SHORT_SUBTITLES=false`。
