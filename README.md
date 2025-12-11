@@ -1,3 +1,4 @@
+# 注意：已转移到新项目[NVIDIA ASR to OpenAI API](https://github.com/fqscfqj/nvidia-asr-openai-api)
 # Parakeet API (Docker)
 
 基于 NVIDIA NeMo 的中文/多语种语音识别服务，提供与 OpenAI Whisper 兼容的 `/v1/audio/transcriptions` 接口。已打包为支持 GPU 的 Docker 镜像，可一键运行。
